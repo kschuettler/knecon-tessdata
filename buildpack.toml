@@ -1,7 +1,7 @@
 api = "0.8"
 
 [buildpack]
-  id = "tessdata"
+  id = "knecon/tessdata"
   name = "vcpkg cmake buildpack"
   description = "Downloads tessdata from tesseract_languages file and sets the TESSDATA_PREFIX environment variable"
   version = "0.1.0"
