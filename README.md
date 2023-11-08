@@ -39,3 +39,7 @@ The tesseract_languages file is required, and each language code should be on a 
 Ensure that your project has the necessary dependencies to use Tesseract OCR.
 Feel free to customize this buildpack to suit your specific needs. For additional information on Tesseract OCR and language data, refer to
 the [Tesseract GitHub repository](https://github.com/tesseract-ocr/tesseract).
+
+## Licence
+MIT
+
