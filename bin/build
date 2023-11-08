@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+
+set -eo pipefail
+
+function log() {
+  echo "-----> $*"
+}
+
+layers_dir="$1"
+env_dir="$2/env"
+plan_path="$3"
+
+tessdata_layer=${layers_dir}/tessdata
+tessdata_toml=${tessdata_layer}.toml
+tessdata_env_dir=${tessdata_layer}/env
+tessdata_url=https://github.com/tesseract-ocr/tessdata/raw/main/
+languages_file=${tessdata_layer}/tesseract_languages
+
+if [ -f ${languages_file} ] && cmp -s tesseract_languages "${languages_file}"; then
+  log "Language file did not change using cached version"
+else
+  log "Language file changed, checking for changes"
+  rm -rf ${tessdata_layer}
+  mkdir ${tessdata_layer}
+  mkdir ${tessdata_env_dir}
+
+  while IFS= read -r language; do
+    if [ -n "$language" ]; then
+      url="${tessdata_url}${language}.traineddata"
+      log "Downloading ${url}"
+      curl -o "${tessdata_layer}"/"${language}".traineddata -LJO "${url}"
+    fi
+  done < tesseract_languages
+
+  cp tesseract_languages ${languages_file}
+fi
+
+export TESSDATA_PREFIX=${tessdata_layer}
+echo -n "${TESSDATA_PREFIX}" > "${tessdata_env_dir}"/TESSDATA_PREFIX
+log "TESSDATA_PREFIX set to: $TESSDATA_PREFIX"
+
+# write layer toml
+cat >> "${tessdata_toml}" <<EOL
+[types]
+launch = true
+build = true
+cache = true
+EOL

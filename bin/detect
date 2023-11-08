@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+if [[ ! -f tesseract_languages ]]; then
+  echo "No tesseract_languages file found!"
+  exit 100
+else
+  echo "tesseract languages found!"
+  cat tesseract_languages
+fi
